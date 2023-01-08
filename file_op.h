@@ -45,6 +45,8 @@ namespace myProject
             int fd_;
             int open_flags_;
             char* file_name_;
+
+            int check_file();
         protected:
             //0代表8进制，6代表文件拥有者拥有读写权限，后面两个4表示同组成员和其他成员拥有读的权限
             static const mode_t OPEN_MODE = 0644;

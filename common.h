@@ -17,4 +17,15 @@
 #include <errno.h>
 #include <assert.h>
 
+
+namespace myProject
+{
+    namespace largefile
+    {
+        //磁盘操作未完成代号
+        const int32_t EXIT_DISK_OPER_INCOMPLETE = -8012;
+        const int32_t TFS_SUCCESS = 0;
+    }
+}
+
 #endif /*_COMMON_H_INCLUDED_*/
