@@ -7,6 +7,7 @@ namespace myProject
         FileOperation::FileOperation(const std::string& file_name,const int open_flags):
         fd_(-1),open_flags_(open_flags)
         {
+            //fprintf(stdout,"FileOperation::FileOperation,open_flags:%d\n",open_flags);
             //重新分配一份内存，将file_name赋值给file_name_
             file_name_ = strdup(file_name.c_str());
             
@@ -35,7 +36,6 @@ namespace myProject
                 ::close(fd_);
                 fd_=-1;
             }
-
             fd_ = ::open(file_name_,open_flags_,OPEN_MODE);
             if(fd_)
             {

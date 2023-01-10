@@ -25,6 +25,7 @@ namespace myProject
         //磁盘操作未完成代号
         const int32_t EXIT_DISK_OPER_INCOMPLETE = -8012;
         const int32_t TFS_SUCCESS = 0;
+        const int32_t TFS_ERROR = -1;
     }
 }
 
