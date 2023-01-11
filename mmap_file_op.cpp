@@ -97,7 +97,7 @@ namespace myProject
                 //内存追加
                 map_file_->remap_file();
             }
-
+            
             //大小合适
             if (is_mapped_ && (offset + size) <= map_file_->get_size())
             {

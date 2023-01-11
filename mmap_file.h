@@ -5,16 +5,7 @@ namespace myProject
 {
     namespace largefile
     {
-        //映射选项
-        struct MMapOption
-        {
-            //最大映射大小
-            int32_t max_mmap_size_;
-            //第一次映射大小
-            int32_t first_mmap_size_;
-            //每次增加映射大小所追加的大小
-            int32_t per_mmap_size_;
-        };
+
         
         class MMapFile
         {
