@@ -8,6 +8,7 @@
 - mmap_file.cpp：内存映射类的实现
 - file_op.cpp:文件操作类的实现
 - mmap_file_op.cpp:文件映射操作类的实现
+- index_handle.cpp:文件索引操作类的实现
 
 # 🚀设计类图
 

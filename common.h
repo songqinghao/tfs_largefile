@@ -16,16 +16,31 @@
 #include <string>
 #include <errno.h>
 #include <assert.h>
-
+#include <sstream>
+#include <iostream>
 
 namespace myProject
 {
     namespace largefile
     {
-        //磁盘操作未完成代号
-        const int32_t EXIT_DISK_OPER_INCOMPLETE = -8012;
-        const int32_t TFS_SUCCESS = 0;
-        const int32_t TFS_ERROR = -1;
+        static const int TFS_SUCCESS = 0;
+        static const int TFS_ERROR = -1;
+        
+        const int32_t EXIT_BLOCKID_ZERO_ERROR = -8003; // block id is zero, fatal error
+        const int32_t EXIT_CREATE_FILEID_ERROR = -8008; // cat find unused fileid in limited times
+        const int32_t EXIT_BLOCKID_CONFLICT_ERROR = -8009; // block id conflict
+        const int32_t EXIT_DISK_OPER_INCOMPLETE = -8012; // read or write length is less than required;
+        const int32_t EXIT_INDEX_ALREADY_LOADED_ERROR = -8024; // index is loaded when create or load
+        const int32_t EXIT_META_NOT_FOUND_ERROR = -8025; // meta not found in index
+        const int32_t EXIT_META_UNEXPECT_FOUND_ERROR = -8026; // meta found in index when insert
+        const int32_t EXIT_META_OFFSET_ERROR = -8027; // require offset is out of index size
+        const int32_t EXIT_BUCKET_CONFIGURE_ERROR = -8028; // bucket size is conflict with before
+        const int32_t EXIT_INDEX_UNEXPECT_EXIST_ERROR = -8029; // index already exist when create index
+        const int32_t EXIT_INDEX_CORRUPT_ERROR = -8030; // index is corrupted, and index is created
+
+        static const std::string MAINBLOCK_DIR_PREFIX = "/mainblock/";
+        static const std::string INDEX_DIR_PREFIX = "/index/";
+        static const mode_t DIR_MODE = 0755;
 
         //映射选项
         struct MMapOption

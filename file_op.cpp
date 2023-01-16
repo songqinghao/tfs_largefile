@@ -4,6 +4,7 @@ namespace myProject
 {
     namespace largefile
     {
+
         FileOperation::FileOperation(const std::string& file_name,const int open_flags):
         fd_(-1),open_flags_(open_flags)
         {
@@ -37,7 +38,7 @@ namespace myProject
                 fd_=-1;
             }
             fd_ = ::open(file_name_,open_flags_,OPEN_MODE);
-            if(fd_)
+            if(fd_ < 0)
             {
                 return -errno;
             }
@@ -93,7 +94,6 @@ namespace myProject
         int FileOperation::ftruncate_file(const int64_t length)
         {
             int fd = check_file();
-
             if(fd < 0)
             {
                 return fd;
