@@ -164,5 +164,36 @@ namespace myProject
                 block_info()->del_size_, block_info()->del_file_count_, block_info()->version_);
             return TFS_SUCCESS;
         }
+
+        int IndexHandle::remove(const uint32_t logic_block_id)
+        {
+            //看是否已经加载映射了
+            if(is_load_)
+            {
+                if(logic_block_id != block_info()->block_id_)
+                {
+                    fprintf(stderr,"block id conflict.block id:%d index block id:%d\n",logic_block_id,block_info()->block_id_);
+                    return EXIT_BLOCKID_CONFLICT_ERROR;
+                }
+            }
+
+            int ret = file_op_->munmap_file();
+            if(ret != TFS_SUCCESS)
+            {
+                return ret;
+            }
+            //删除文件
+            ret = file_op_->unlink_file();
+            
+        }
+        int IndexHandle::flush()
+        {
+            int ret = file_op_->flush_file();
+            if(ret != TFS_SUCCESS)
+            {
+                fprintf(stderr,"index flush failed!,reason:%s",strerror(errno));
+            }
+            return ret;
+        }
     }
 }

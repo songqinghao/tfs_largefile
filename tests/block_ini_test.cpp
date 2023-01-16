@@ -1,7 +1,7 @@
 //测试块的初始化
-#include "index_handle.h"
-#include "file_op.h"
-#include "common.h"
+#include "../index_handle.h"
+#include "../file_op.h"
+#include "../common.h"
 #include <sstream>
 using namespace myProject;
 using namespace std;
@@ -30,25 +30,16 @@ int main(void)
         cerr<<"invalid blockid!!"<<endl;
         return -1;
     }
-    //1.生成主块文件
+    
     std::stringstream tmp_streams;
     tmp_streams << "."<<largefile::MAINBLOCK_DIR_PREFIX<<block_id;
     tmp_streams >> mainblock_path;
     cout<<mainblock_path<<endl;
     //创建主块操作对象
-    //largefile::FileOperation * mainblock = new largefile::FileOperation(mainblock_path,O_RDWR | O_LARGEFILE | O_CREAT);
     largefile::FileOperation* mainblock = new largefile::FileOperation(mainblock_path,O_RDWR|O_CREAT|O_LARGEFILE);
-    //创建主块文件（调整为设置的指定大小）
-    ret = mainblock->ftruncate_file(main_blocksize);
     
-    if(ret!=largefile::TFS_SUCCESS)
-    {
-        fprintf(stderr,"create main block %d failed，reason %s\n",block_id,strerror(errno));
-        delete mainblock;
-        return -2;
-    }
 
-    //2.生成索引文件
+    //1.生成索引文件
     largefile::IndexHandle* index_handle = new largefile::IndexHandle(".",block_id);
     if(debug)
     {
@@ -58,12 +49,28 @@ int main(void)
     if(ret != largefile::TFS_SUCCESS)
     {
        fprintf(stderr,"create index %d failed.\n",block_id); 
-       delete mainblock;
        delete index_handle;
        return -3;
     }
 
+    //2.生成主块文件
+    //创建主块文件（调整为设置的指定大小）
+    ret = mainblock->ftruncate_file(main_blocksize);
+    
+    if(ret!=largefile::TFS_SUCCESS)
+    {
+        fprintf(stderr,"create main block %d failed，reason %s\n",block_id,strerror(errno));
+        delete mainblock;
+        //将索引文件也进行删除
+        index_handle->remove(block_id);
+        return -2;
+    }
     //3.其他操作
+    mainblock->close_file();
+    index_handle->flush();
+
+    delete mainblock;
+    delete index_handle;
     return 0;
 
 

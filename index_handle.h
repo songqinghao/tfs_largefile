@@ -30,6 +30,10 @@ namespace myProject
                 //创建索引文件
                 int create(const uint32_t logic_block_id,const int32_t bucket_size,const MMapOption map_option);
                 int load(const uint32_t logic_block_id,const int32_t bucket_size,const MMapOption map_option);
+                //删除index文件：ummap以及unlink index file 
+                int remove(const uint32_t logic_block_id);
+                //进行一些同步操作
+                int flush();
                 IndexHeader* index_header()
                 {
                     //拿到映射内存的首地址
