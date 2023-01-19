@@ -42,6 +42,13 @@ namespace myProject
         static const std::string INDEX_DIR_PREFIX = "/index/";
         static const mode_t DIR_MODE = 0755;
 
+        enum OperType
+        {
+            C_OPER_INSERT = 1,
+            C_OPER_DELETE
+        };
+  	
+
         //映射选项
         struct MMapOption
         {
