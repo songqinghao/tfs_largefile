@@ -63,8 +63,12 @@ namespace myProject
                     reinterpret_cast<IndexHeader*>(file_op_->get_map_data())->data_file_offset_+=file_size;
                 }
                 //写metaInfo，传入key值以及meta
-                int write_segment_meta(const uint64_t key,MetaInfo& meta);
+                int32_t write_segment_meta(const uint64_t key,MetaInfo& meta);
+                //读metaInfo
                 int32_t read_segment_meta(const uint64_t key,MetaInfo& meta);
+                //删除metaInfo
+                int32_t delete_segment_meta(const uint64_t key);
+
                 //hash查找
                 int hash_find(const uint64_t key,int32_t& current_offset,int32_t& previous_offset);
                 //返回桶数组的首节点
@@ -74,6 +78,8 @@ namespace myProject
                 }
                 int32_t hash_insert(const uint32_t key,int32_t& previous_offset,MetaInfo&meta);
 
+                int32_t get_free_meta_offset()const;
+                
                 
 
             private:

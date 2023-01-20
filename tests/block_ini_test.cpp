@@ -1,7 +1,7 @@
 //测试块的初始化
-#include "../index_handle.h"
-#include "../file_op.h"
-#include "../common.h"
+#include "index_handle.h"
+#include "file_op.h"
+#include "common.h"
 #include <sstream>
 using namespace myProject;
 using namespace std;
