@@ -187,6 +187,7 @@ namespace myProject
             return TFS_SUCCESS;
         }
 
+
         int IndexHandle::remove(const uint32_t logic_block_id)
         {
             //看是否已经加载映射了
@@ -238,6 +239,22 @@ namespace myProject
             }
             //如果不存在就将metaInfo写入到哈希表中hash_insert(meta,slot,previous_offset)
             ret = hash_insert(key,previous_offset,meta);
+            return ret;
+        }
+
+        //将对应key的所属meta进行取出
+        int32_t IndexHandle::read_segment_meta(const uint64_t key,MetaInfo& meta)
+        {
+            int32_t current_offset = 0;
+            int32_t previous_offset = 0;
+            //int32_t slot = static_cast<uint32_t>(key)%bucket_size();
+            int32_t ret =hash_find(key,current_offset,previous_offset);
+            //说明存在key
+            if(ret == TFS_SUCCESS)
+            {
+                ret = file_op_->pread_file(reinterpret_cast<char*>(&meta),sizeof(MetaInfo),current_offset);
+                return ret;
+            }
             return ret;
         }
 
