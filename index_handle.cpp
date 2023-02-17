@@ -274,8 +274,10 @@ namespace myProject
         //删除metaInfo
         int32_t IndexHandle::delete_segment_meta(const uint64_t key)
         {
+            //初始化要删除节点的偏移值以及上一个节点的偏移值
             int32_t current_offset = 0;
             int32_t previous_offset = 0;
+            //找到要删除节点的当前offset以及上个节点的offset
             int32_t ret =hash_find(key,current_offset,previous_offset);
 
             if(ret!=TFS_SUCCESS)
@@ -284,6 +286,7 @@ namespace myProject
             }
             MetaInfo meta;
             MetaInfo previous_meta;
+            //将要删除节点的各种信息进行读取到meta中
             ret = file_op_->pread_file(reinterpret_cast<char*>(&meta),sizeof(MetaInfo),current_offset);
             if(ret!=TFS_SUCCESS)
             {
@@ -291,6 +294,7 @@ namespace myProject
             }
 
             int32_t next_pos = meta.get_next_meta_offset();
+            //如果要删除的节点位于桶的“开头”
             if(previous_offset == 0)
             {
                 int32_t slot= static_cast<uint32_t>(key)%bucket_size();
@@ -310,18 +314,21 @@ namespace myProject
                 }
                 
             }
-            //可重用链表的插入
+            //可重用链表的插入，头插法
             meta.set_next_meta_offset(this->get_free_meta_offset());
             ret = file_op_->pwrite_file(reinterpret_cast<char*>(&meta),sizeof(MetaInfo),current_offset);
             if(ret!=TFS_SUCCESS)
             {
                 return ret;
             }
+
+            //将索引的可重用节点的偏移进行更新
             index_header()->free_head_offset_=current_offset;
             if(debug)
             {
                 fprintf(stdout,"delete_segment_meta delete metainfo,current_offset:%d\n",current_offset);
             }
+            //更新块的信息
             update_block_info(largefile::C_OPER_DELETE,meta.get_size());
             return TFS_SUCCESS;
         }
@@ -366,6 +373,7 @@ namespace myProject
         //hash插入
         int32_t IndexHandle::hash_insert(const uint32_t key,int32_t& previous_offset,MetaInfo&meta)
         {
+            
             int ret = TFS_SUCCESS;
             int32_t current_offset;
             MetaInfo tmp_meta_info;
@@ -375,6 +383,7 @@ namespace myProject
             //2.1考虑有可重用节点的情况
             if(this->get_free_meta_offset()!=0)
             {
+                //将可重用链表的第一个节点进行读取，保存至tmp中
                 ret = file_op_->pread_file(reinterpret_cast<char*>(&tmp_meta_info),sizeof(MetaInfo),this->get_free_meta_offset());
                 if(ret!=TFS_SUCCESS)
                 {
@@ -389,6 +398,7 @@ namespace myProject
                 }
             }
             else{
+                //如果没有空闲节点，那么就在尾部重新创建一个meta
                 current_offset = index_header()->index_file_size_;
                 index_header()->index_file_size_+=sizeof(MetaInfo);
             }
